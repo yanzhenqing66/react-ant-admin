@@ -7,14 +7,12 @@ import Admin from '../pages/admin/admin'
 class AppRouter extends Component {
   render() {
     return (
-      <div>
         <BrowserRouter>
           <Switch>
             <Route path='/login' component={Login}></Route>
-            <Route exact path='/' component={Admin}></Route>
+            <Route path='/' component={Admin}></Route>
           </Switch>
         </BrowserRouter>
-      </div>
     );
   }
 }

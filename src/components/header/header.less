@@ -1,0 +1,49 @@
+.header {
+  height: 80px;
+  background-color: #fff;
+
+  .header-top {
+    height: 50%;
+    text-align: right;
+
+    button {
+      padding-right: 40px;
+    }
+
+    border-bottom: 2px solid #1da57a;
+  }
+
+  .header-bottom {
+    display: flex;
+    align-items: center;
+
+    .bottom-left {
+      width: 25%;
+      text-align: center;
+      font-size: 25px;
+      position: relative;
+      &::after {
+        content: '';
+        position: absolute;
+        right: 50%;
+        transform: translateX(50%);
+        top: 100%;
+        border-top: 20px solid #ffffff;
+        border-right: 20px solid transparent;
+        border-bottom: 20px solid transparent;
+        border-left: 20px solid transparent;
+      }
+    }
+
+    .bottom-right {
+      width: 75%;
+      text-align: right;
+      margin-right: 40px;
+
+      img {
+        height: 20px;
+        margin: 0 15px;
+      }
+    }
+  }
+}
