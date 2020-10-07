@@ -9,7 +9,7 @@ import storageUtil from '../../utils/storageUtil'
 import './login.less'
 import logo from '../../assets/images/logo.png'
 
-class Login extends Component {
+export default class Login extends Component {
   onFinish = async (values) => {
     const { username, password } = values
     const res = await reqLogin({username, password})
@@ -77,5 +77,3 @@ class Login extends Component {
     )
   }
 }
-
-export default Login;

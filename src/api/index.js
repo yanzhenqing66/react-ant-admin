@@ -8,7 +8,7 @@ const BASE = ''
 // 登录请求
 export const reqLogin = payload => api(BASE + '/login', payload, 'POST')
 
-// 天气请求
+// 天气请求 jsonp跨域
 export function reqWeather(city) {
   const url = `http://api.map.baidu.com/telematics/v3/weather?location=${city}&output=json&ak=3p49MVra6urFRGOT9s8UBWr2`
   return new Promise((resolve, reject) => {
@@ -22,3 +22,14 @@ export function reqWeather(city) {
     })
   })
 }
+
+
+/*
+品类管理
+*/
+// 一级分类列表
+export const reqCategorys = payload => api(BASE + '/manage/category/list', payload)
+// 添加分类列表
+export const reqAddcate = payload => api(BASE + '/manage/category/add', payload, 'POST')
+// 更新品类名称
+export const reqUpdatecate = payload => api(BASE + '/manage/category/update', payload, 'POST')
