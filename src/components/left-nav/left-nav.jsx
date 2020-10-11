@@ -25,7 +25,7 @@ class LeftNav extends Component {
       } else {
         // 判断子节点的路由是否被打开
         // 使用find查找子路由中的key是否和被打开的key 是否一致
-        const cItem = item.children.find(cItem => cItem.key === path)
+        const cItem = item.children.find(cItem => path.includes(cItem.key))
         if(cItem) {  // 若果子路由中的key被打开，则说明被打开的子路由的父路由被打开
           this.openKey = item.key
         }
@@ -43,7 +43,10 @@ class LeftNav extends Component {
   }
 
   render() {
-    const path = this.props.location.pathname
+    let path = this.props.location.pathname
+    if(path.includes('/product')) {
+      path = '/product'
+    }
     const openKey = this.openKey
     return (
       <div className="left-nav">
