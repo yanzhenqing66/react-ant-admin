@@ -43,3 +43,5 @@ export const reqProducts = payload => api(BASE + '/manage/product/list', payload
 export const reqSearchproducts = payload => api(BASE + '/manage/product/search', payload)
 // 删除图片 
 export const reqDelPic = payload => api(BASE + '/manage/img/delete', payload, 'POST')
+// 上传商品
+export const reqAddproduct = payload => api(BASE+ '/manage/product/add', payload, 'POST')

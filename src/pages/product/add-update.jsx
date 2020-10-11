@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Card, Button, Form, Input, Cascader } from 'antd'
+import { Card, Button, Form, Input, Cascader, message } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import PicturesWall from './components/pictures-wall'
+import { reqAddproduct } from '../../api'
 
 const Item = Form.Item
 const { TextArea } = Input
@@ -35,6 +36,18 @@ const AddUpdate = () => {
       value: '1',
       label: '生活用品',
       isLeaf: true,
+      children: [
+        {
+          label: `毛巾`,
+          value: '001',
+          isLeaf: true
+        },
+        {
+          label: `被子`,
+          value: '002',
+          isLeaf: true
+        }
+      ]
     },
   ]
 
@@ -48,7 +61,7 @@ const AddUpdate = () => {
   // 表单布局
   const formItemLayout = {
     labelCol: { span: 2 },
-    wrapperCol: { span: 8 },
+    wrapperCol: { span: 7 },
   }
   // 商品价格验证
   const valiPrice = async (rule, value) => {
@@ -60,10 +73,24 @@ const AddUpdate = () => {
   }
   // 提交表单
   const submit = () => {
-    form.validateFields().then(values => {
-      console.log(values)
+    form.validateFields().then(async (values) => {
+      const { name, desc, price, categoryIds } = values
       const imgs = uploadRef.current.getImgs()
-      console.log(imgs);
+      const res = await reqAddproduct({
+        name,
+        desc,
+        price,
+        detail: null,
+        pCategoryId: categoryIds[0],
+        categoryId: categoryIds[1] ? categoryIds[1] : '',
+        imgs
+      })
+      if (res.status === 0) {
+        message.success('添加成功')
+        history.push('/product')
+      } else {
+        message.error('添加失败')
+      }
     }).catch(err => {
       console.log(err)
     })
@@ -98,8 +125,6 @@ const AddUpdate = () => {
         </Item>
         <Item label="商品图片">
           <PicturesWall ref={uploadRef} />
-        </Item>
-        <Item label="商品详情">
         </Item>
         <Button type="primary" style={{ marginLeft: 100 }} onClick={submit}>提交</Button>
       </Form>
