@@ -1,3 +1,6 @@
+## 启动项目时，请先进入 `admin-server` 文件下启动服务器
+### `npm start`
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
