@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import {useHistory} from 'react-router-dom'
-import { Card, Select, Button, Table } from 'antd'
+import { useHistory } from 'react-router-dom'
+import { Card, Select, Button, Table, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { reqProducts, reqSearchproducts } from '../../api'
+import { reqProducts, reqSearchproducts,reqUpdStatus } from '../../api'
 
 const Option = Select.Option
 
@@ -31,22 +31,29 @@ const ProductHome = () => {
     },
     {
       title: '状态',
-      dataIndex: 'status',
+      // dataIndex: 'status',
       width: 100,
-      render: (status) => (
-        <span>
-          <Button type="primary">下架</Button>
-          <span>在售</span>
-        </span>
-      )
+      render: (product) => {
+         const { status, _id } = product
+         const newStatus = status === 1 ? 2 : 1
+        return (
+          <span >
+            <Button Button type="primary" onClick={() => offLine(_id, newStatus)} > {status === 1 ? '下架' : '上架'}</Button>
+            <span>
+              {
+                status === 1 ? '在售' : '已下架'
+              }
+            </span>
+          </span >
+        )
+      }
     },
     {
       title: '操作',
       width: 100,
       render: (product) => (
         <span>
-          <Button type="link">详情</Button>
-          <Button type="link">修改</Button>
+          <Button type="link" onClick={() => history.push('/product/detail', { product })}>详情</Button>
         </span>
       )
     },
@@ -66,11 +73,22 @@ const ProductHome = () => {
 
   // 搜索
   const handleSearch = async (pageNum) => {
-    const res = await reqSearchproducts({ pageNum, pageSize: 5, [searchType]: searchName })
+    const res = await reqSearchproducts({ pageNum, pageSize: 5, [searchType]: searchName ? searchName : null })
     if (res.status === 0) {
       const { list, total } = res.data
       setProducts(list)
       setTotal(total)
+    }
+  }
+
+  // 商品下架
+  const offLine = async (_id, newStatus) => {
+    const res = await reqUpdStatus({productId: _id, status: newStatus})
+    if(res.status === 0) {
+      message.success('状态修改成功')
+      productData()
+    }else{
+      message.error('状态修改失败')
     }
   }
 
@@ -100,6 +118,7 @@ const ProductHome = () => {
   return (
     <Card title={title} extra={extra}>
       <Table
+        bordered
         dataSource={products}
         columns={columns}
         rowKey="_id"
