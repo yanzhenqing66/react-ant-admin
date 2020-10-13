@@ -46,4 +46,14 @@ export const reqDelPic = payload => api(BASE + '/manage/img/delete', payload, 'P
 // 上传商品
 export const reqAddproduct = payload => api(BASE+ '/manage/product/add', payload, 'POST')
 // 改变状态
-export const reqUpdStatus = payload => api('/manage/product/updateStatus', payload, 'POST')
+export const reqUpdStatus = payload => api(BASE + '/manage/product/updateStatus', payload, 'POST')
+
+/*
+  角色管理
+*/
+// 获取角色列表
+export const reqGetRoles = () => api(BASE + '/manage/role/list')
+// 添加角色
+export const reqAddRoles = payload => api(BASE + '/manage/role/add', payload, 'POST')
+// 更新角色
+export const reqUpdRoles = payload => api(BASE + '/manage/role/update', payload, 'POST')

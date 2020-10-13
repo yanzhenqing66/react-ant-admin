@@ -35,7 +35,7 @@ class Header extends Component {
       if (item.key === path) {
         title = item.title
       } else if (item.children) {
-        const cItem = item.children.find(cItem => cItem.key === path)
+        const cItem = item.children.find(cItem => path.includes(cItem.key))
         if (cItem) {
           title = cItem.title
         }
