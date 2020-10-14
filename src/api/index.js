@@ -57,3 +57,16 @@ export const reqGetRoles = () => api(BASE + '/manage/role/list')
 export const reqAddRoles = payload => api(BASE + '/manage/role/add', payload, 'POST')
 // 更新角色
 export const reqUpdRoles = payload => api(BASE + '/manage/role/update', payload, 'POST')
+
+
+/*
+  用户管理
+*/
+// 获取用户列表
+export const reqUserList = () => api(BASE + '/manage/user/list')
+// 添加用户
+export const reqAddUser = payload => api(BASE + '/manage/user/add', payload, 'POST')
+// 删除用户
+export const reqDelUser = payload => api(BASE + '/manage/user/delete', payload, 'POST')
+// 修改用户
+export const reqEditUser = payload => api(BASE + '/manage/user/update', payload, 'POST')
