@@ -1,10 +1,13 @@
-import React, { useState, useEffect,createRef } from 'react'
+import React, { useState, useEffect, createRef } from 'react'
 import { Button, Card, Table, Modal, message } from 'antd'
+import { useHistory } from 'react-router-dom'
 import { reqGetRoles, reqAddRoles, reqUpdRoles } from '../../api'
 import AddRoles from './components/add-roles'
 import { formateDate } from '../../utils/dateUtil'
 import AuthRoles from './components/auth-roles'
 import memoryUtils from '../../utils/momeryUtil'
+import storageUtil from '../../utils/storageUtil'
+
 
 function Role() {
   const [roles, setRoles] = useState([]) // 角色列表
@@ -13,6 +16,7 @@ function Role() {
   const [setRolesVisible, setSetRolesVisible] = useState(false)
   const [addForm, setAddForm] = useState({})  // 传入的添加角色
   const ref = createRef()
+  const history = useHistory()
 
   // 表格表头
   const columns = [
@@ -87,11 +91,19 @@ function Role() {
     role.auth_time = Date.now()
     role.auth_name = memoryUtils.user.username
     const res = await reqUpdRoles(role)
-    if(res.status === 0) {
-      setSetRolesVisible(false)
-      getRoles()
-      message.success('权限设置成功')
-    }else {
+    if (res.status === 0) {
+      // 修改登录用户的角色权限时，退出登录
+      if (role._id === memoryUtils.user.role_id) {
+        memoryUtils.user = {}
+        storageUtil.removeUser()
+        history.replace('/login')
+        message.info('权限修改，请重新登录')
+      } else {
+        setSetRolesVisible(false)
+        getRoles()
+        message.success('权限设置成功')
+      }
+    } else {
       message.error('权限设置失败')
     }
   }
@@ -131,7 +143,7 @@ function Role() {
         onOk={handleSetOk}
         onCancel={handleCancel}
       >
-        <AuthRoles role={role} ref={ref}/>
+        <AuthRoles role={role} ref={ref} />
       </Modal>
     </>
   )
