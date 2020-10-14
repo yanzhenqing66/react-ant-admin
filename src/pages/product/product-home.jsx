@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { Card, Select, Button, Table, message } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { reqProducts, reqSearchproducts,reqUpdStatus } from '../../api'
+import { reqProducts, reqSearchproducts, reqUpdStatus } from '../../api'
 
 const Option = Select.Option
 
@@ -34,17 +34,17 @@ const ProductHome = () => {
       // dataIndex: 'status',
       width: 100,
       render: (product) => {
-         const { status, _id } = product
-         const newStatus = status === 1 ? 2 : 1
+        const { status, _id } = product
+        const newStatus = status === 1 ? 2 : 1
         return (
-          <span >
-            <Button Button type="primary" onClick={() => offLine(_id, newStatus)} > {status === 1 ? '下架' : '上架'}</Button>
+          <span>
+            <Button type="primary" onClick={() => offLine(_id, newStatus)}>{status === 1 ? '下架' : '上架'}</Button>
             <span>
               {
                 status === 1 ? '在售' : '已下架'
               }
             </span>
-          </span >
+          </span>
         )
       }
     },
@@ -83,11 +83,11 @@ const ProductHome = () => {
 
   // 商品下架
   const offLine = async (_id, newStatus) => {
-    const res = await reqUpdStatus({productId: _id, status: newStatus})
-    if(res.status === 0) {
+    const res = await reqUpdStatus({ productId: _id, status: newStatus })
+    if (res.status === 0) {
       message.success('状态修改成功')
       productData()
-    }else{
+    } else {
       message.error('状态修改失败')
     }
   }
@@ -122,7 +122,7 @@ const ProductHome = () => {
         dataSource={products}
         columns={columns}
         rowKey="_id"
-        pagination={{ defaultCurrent: 1, defaultPageSize: 5, showQuickJumper: true, total: total, onChange: (pageNum) => this.productData(pageNum) }}
+        pagination={{ defaultCurrent: 1, defaultPageSize: 5, showQuickJumper: true, total: total, onChange: (pageNum) => productData(pageNum) }}
       />
     </Card>
   )
