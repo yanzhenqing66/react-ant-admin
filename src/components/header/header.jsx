@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
-import momeryUtil from '../../utils/momeryUtil'
-import storageUtil from '../../utils/storageUtil'
 import { formateDate } from '../../utils/dateUtil'
-import menuList from '../../config/menuConfig'
 import { reqWeather } from '../../api'
 import { Modal, Button } from 'antd'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
+import {connect} from 'react-redux'
+import {logout} from '../../store/actions'
 import './header.less'
 
 class Header extends Component {
@@ -28,21 +27,22 @@ class Header extends Component {
     }, 1000)
   }
   // 根据地址获取title
-  getTitle = () => {
-    const path = this.props.location.pathname
-    let title
-    menuList.forEach(item => {
-      if (item.key === path) {
-        title = item.title
-      } else if (item.children) {
-        const cItem = item.children.find(cItem => path.includes(cItem.key))
-        if (cItem) {
-          title = cItem.title
-        }
-      }
-    })
-    return title
-  }
+  // getTitle = () => {
+  //   const path = this.props.location.pathname
+  //   let title
+  //   menuList.forEach(item => {
+  //     if (item.key === path) {
+  //       title = item.title
+  //     } else if (item.children) {
+  //       const cItem = item.children.find(cItem => path.includes(cItem.key))
+  //       if (cItem) {
+  //         title = cItem.title
+  //       }
+  //     }
+  //   })
+  //   return title
+  // }
+
   // 退出
   logout = () => {
     // 弹出退出对话框
@@ -52,13 +52,10 @@ class Header extends Component {
       okText: '确认',
       cancelText: '取消',
       onOk: () => {
-        // 清除本地 user 用户信息
-        storageUtil.removeUser()
-        momeryUtil.user = {}
+        // redux 调用分发action函数，退出登录
+        this.props.logout()
         // 清除状态改变的定时器
         clearInterval(this.intervalId)
-        // 跳转路由，到登录页面
-        this.props.history.replace('/login')
       },
     });
   }
@@ -68,8 +65,9 @@ class Header extends Component {
   }
   render() {
     const { curTime, dayPictureUrl, weather } = this.state
-    const username = momeryUtil.user.username
-    const title = this.getTitle()
+    const username = this.props.user.username
+    // const title = this.getTitle()
+    const title = this.props.headerTitle
     return (
       <div className="header">
         <div className="header-top">
@@ -90,4 +88,7 @@ class Header extends Component {
     )
   }
 }
-export default withRouter(Header)
+export default connect(
+  state => ({headerTitle: state.headerTitle, user: state.user}),
+  {logout}
+)(withRouter(Header))

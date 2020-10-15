@@ -1,36 +1,25 @@
-import React, { Component } from 'react';
-import {Redirect} from 'react-router-dom'
-import { Form, Input, Button, message } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { reqLogin } from '../../api/index'
-import momeryUtil from '../../utils/momeryUtil'
-import storageUtil from '../../utils/storageUtil'
+import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
+import { Form, Input, Button } from 'antd'
+import { UserOutlined, LockOutlined } from '@ant-design/icons'
+import { connect } from 'react-redux'
 
+import { login } from '../../store/actions'
 import './login.less'
 import logo from '../../assets/images/logo.png'
 
-export default class Login extends Component {
+class Login extends Component {
+  // 表单验证，获取请求
   onFinish = async (values) => {
     const { username, password } = values
-    const res = await reqLogin({username, password})
-    if(res.status === 0) {
-      // 保存用户登录的信息
-      const user = res.data
-      momeryUtil.user = user
-      storageUtil.saveUser(user)
-      // 将用户信息，保存到浏览器
-      message.success('登录成功')
-      // 跳转登录页面
-      this.props.history.replace('/')
-    }else {
-      message.error(res.msg)
-    }
+    this.props.login(username, password)
   }
   render() {
-    const user = momeryUtil.user
-    if(user && user._id) {
-      return <Redirect to='/'></Redirect>
+    const user = this.props.user
+    if (user && user._id) {
+      return <Redirect to='/home'></Redirect>
     }
+    const errorMsg = this.props.user.errorMsg
     return (
       <div className="login">
         <div className="login-header">
@@ -38,6 +27,7 @@ export default class Login extends Component {
           <h1>后台管理系统</h1>
         </div>
         <section className="login-content">
+          <div className="errmsg">{errorMsg}</div>
           <h2>用户登录</h2>
           <Form
             className="login-form"
@@ -77,3 +67,8 @@ export default class Login extends Component {
     )
   }
 }
+
+export default connect(
+  state => ({ user: state.user }),
+  { login }
+)(Login)
