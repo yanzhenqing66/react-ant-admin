@@ -1,12 +1,59 @@
 import React, { Component } from 'react'
-import './home.less'
+import { Card, Button } from 'antd'
+import ReactEcharts from 'echarts-for-react'
 
 export default class Home extends Component {
+
+  state = {
+    sales: [10, 20, 36, 10, 10, 20],  // 销量
+    store: [10, 12, 30, 15, 5, 15]   // 库存
+  }
+
+  updateDate = () => {
+    this.setState(() => ({
+      sales: this.state.sales.map(sale => sale + 1),
+      store: this.state.store.map(item => item - 1)
+    }))
+  }
+
+  getOption = (sales, store) => {
+    return {
+      title: {
+        text: '销量和库存'
+      },
+      tooltip: {},
+      legend: {
+        data: ['销量', '库存']
+      },
+      xAxis: {
+        data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"]
+      },
+      yAxis: {},
+      series: [
+        {
+          name: '销量',
+          type: 'line',
+          data: sales
+        },
+        {
+          name: '库存',
+          type: 'line',
+          data: store
+        },
+      ]
+    }
+  }
+
   render() {
+    const title = <Button type="primary" onClick={this.updateDate}>更新</Button>
+    const { sales, store } = this.state
     return (
-      <div className="home-content">
-        <h1>欢迎来到后台管理系统</h1>
-      </div>
+      <>
+        <Card title={title}>
+          <ReactEcharts option={this.getOption(sales, store)} />
+        </Card>
+      </>
+
     )
   }
 }
