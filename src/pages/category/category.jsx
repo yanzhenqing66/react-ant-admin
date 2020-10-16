@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { Card, Table, message, Button } from 'antd'
-import { reqCategorys } from '../../api'
-import AddFormBtn from './components/add-form'
+import { Card, Table, message, Button, Modal } from 'antd'
+import { reqCategorys, reqAddcate } from '../../api'
+import { PlusOutlined } from '@ant-design/icons'
+import AddForm from './components/add-form'
+
 
 export default class Category extends Component {
 
@@ -9,7 +11,8 @@ export default class Category extends Component {
     categorys: [],   // 一级分类列表
     subCategorys: [],  // 二级分类列表
     parentId: '0',  // 父分类id
-    parentName: '', // 父分类名称  
+    parentName: '', // 父分类名称
+    addCateVisible: false
   }
   // 初始化表头
   initColumns = () => {
@@ -28,7 +31,6 @@ export default class Category extends Component {
             {
               this.state.parentId === '0' ? <Button type="link" onClick={() => this.showSubCategory(category)}>查看子分类</Button> : '暂无下一级分类'
             }
-
           </div>
         )
       },
@@ -70,6 +72,26 @@ export default class Category extends Component {
       subCategorys: []
     })
   }
+  // 确定添加分类, 请求数据
+  onAddCategoryOK = () => {
+    this.form.validateFields()
+      .then(async (values) => {
+        this.form.resetFields()
+        const { parentId, categoryName } = values
+        const res = await reqAddcate({ parentId, categoryName })
+        if (res.status === 0) {
+          this.getCategorys()
+          this.setState({ addCateVisible: false })
+          message.success('分类添加成功')
+        } else {
+          message.error('添加失败')
+        }
+      })
+  }
+  // 取消添加分类
+  onCancel = () => {
+    this.setState({ addCateVisible: false })
+  }
   componentWillMount() {
     this.initColumns()
   }
@@ -77,7 +99,7 @@ export default class Category extends Component {
     this.getCategorys()
   }
   render() {
-    const { categorys, parentId, subCategorys } = this.state
+    const { categorys, parentId, subCategorys, addCateVisible } = this.state
     const title = parentId === '0' ? '一级分类列表' : (
       <span>
         <Button type="link" onClick={this.handleBackCate}>一级分类列表</Button>
@@ -86,7 +108,13 @@ export default class Category extends Component {
     )
 
     const addBtn = (
-      <AddFormBtn categorys={categorys} onSendCate={values => this.sendCate = values} />
+      <Button
+        type="primary"
+        icon={<PlusOutlined />}
+        onClick={() => this.setState({ addCateVisible: true })}
+      >
+        添加
+      </Button>
     )
     return (
       <div>
@@ -99,6 +127,19 @@ export default class Category extends Component {
             pagination={{ defaultCurrent: 1, defaultPageSize: 5, showQuickJumper: true }}
           />
         </Card>
+        <Modal
+          visible={addCateVisible}
+          title="添加分类"
+          okText="确定"
+          cancelText="取消"
+          onCancel={this.onCancel}
+          onOk={this.onAddCategoryOK}
+        >
+          <AddForm
+            categorys={categorys}
+            setForm={form => this.form = form}
+          />
+        </Modal>
       </div>
     )
   }
