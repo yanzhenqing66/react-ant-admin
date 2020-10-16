@@ -1,22 +1,23 @@
 import React, { useState, useEffect, createRef } from 'react'
 import { Button, Card, Table, Modal, message } from 'antd'
-import { useHistory } from 'react-router-dom'
+import { connect } from 'react-redux'
+
+import { logout } from '../../store/actions'
 import { reqGetRoles, reqAddRoles, reqUpdRoles } from '../../api'
 import AddRoles from './components/add-roles'
 import { formateDate } from '../../utils/dateUtil'
 import AuthRoles from './components/auth-roles'
-import memoryUtils from '../../utils/momeryUtil'
-import storageUtil from '../../utils/storageUtil'
 
 
-function Role() {
+const Role = (props) => {
   const [roles, setRoles] = useState([]) // 角色列表
   const [role, setRole] = useState({})   // 选中的角色
   const [addRolesVisible, setAddRolesVisible] = useState(false)
   const [setRolesVisible, setSetRolesVisible] = useState(false)
   const [addForm, setAddForm] = useState({})  // 传入的添加角色
   const ref = createRef()
-  const history = useHistory()
+
+  const { user, logout } = props
 
   // 表格表头
   const columns = [
@@ -89,14 +90,12 @@ function Role() {
     const authTree = ref.current.getAuthTree()
     role.menus = authTree
     role.auth_time = Date.now()
-    role.auth_name = memoryUtils.user.username
+    role.auth_name = user.username
     const res = await reqUpdRoles(role)
     if (res.status === 0) {
       // 修改登录用户的角色权限时，退出登录
-      if (role._id === memoryUtils.user.role_id) {
-        memoryUtils.user = {}
-        storageUtil.removeUser()
-        history.replace('/login')
+      if (role._id === user.role_id) {
+        logout()
         message.info('权限修改，请重新登录')
       } else {
         setSetRolesVisible(false)
@@ -149,4 +148,7 @@ function Role() {
   )
 }
 
-export default Role
+export default connect(
+  state => ({ user: state.user }),
+  { logout }
+)(Role)
