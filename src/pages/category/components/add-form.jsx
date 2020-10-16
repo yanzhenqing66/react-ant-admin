@@ -60,8 +60,6 @@ const AddFormBtn = ({categorys, onSendCate}) => {
   const [visible, setVisible] = useState(false)
 
   const onCreate = async (values) => {
-    // console.log(values);
-    // onSendCate(values)
     const { parentId, categoryName } = values
     const res = await reqAddcate({ parentId, categoryName })
     if (res.status === 0) {

@@ -24,10 +24,9 @@ export default class Category extends Component {
         width: 300,
         render: (category) => (
           <div>
-            <Button type="link">修改分类</Button>
             {/* 传参的话需要使用匿名函数，因为render时，回调函数也会被调用，会把参数都传过去 */}
             {
-              this.state.parentId === '0' ? <Button type="link" onClick={() => this.showSubCategory(category)}>查看子分类</Button> : null
+              this.state.parentId === '0' ? <Button type="link" onClick={() => this.showSubCategory(category)}>查看子分类</Button> : '暂无下一级分类'
             }
 
           </div>
