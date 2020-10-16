@@ -3,7 +3,7 @@
 */
 import { reqLogin } from '../api'
 import storageUtil from '../utils/storageUtil'
-import { SET_HEADER_TITLE, RECEIVE_USER, ERROR_MSG, LOGOUT, ADD_CATEGORYS } from './action-types'
+import { SET_HEADER_TITLE, RECEIVE_USER, ERROR_MSG, LOGOUT } from './action-types'
 
 // 触发事件，分发标题
 export const setHeaderTitle = (title) => ({ type: SET_HEADER_TITLE, data: title })
